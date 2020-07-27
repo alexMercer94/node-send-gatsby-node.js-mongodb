@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const { restart } = require('nodemon');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
