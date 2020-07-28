@@ -17,6 +17,7 @@ app.use(express.json());
 app.use('/api/users', require('./routes/users'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/enlaces', require('./routes/enlaces'));
+app.use('/api/files', require('./routes/files'));
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server started on port ${port}`);

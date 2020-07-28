@@ -42,3 +42,31 @@ exports.newLink = async (req, res, next) => {
         console.log(error);
     }
 };
+
+/**
+ * Get Link
+ * @param {*} req
+ * @param {*} res
+ */
+exports.getLink = async (req, res, next) => {
+    const { url } = req.params;
+    // Check if exiist link
+    const link = await Enlaces.findOne({ url });
+    if (!link) {
+        res.status(404).json({ msg: 'El enlace no existe' });
+        return next();
+    }
+    res.json({ file: link.name });
+    const { downloads, name } = link;
+
+    if (downloads === 1) {
+        // Delete file
+        req.file = name;
+        await Enlaces.findOneAndRemove(url);
+
+        next();
+    } else {
+        link.downloads--;
+        await link.save();
+    }
+};
