@@ -12,10 +12,10 @@ exports.newLink = async (req, res, next) => {
     }
 
     // Create link's object
-    const { original_name, password } = req.body;
+    const { original_name, name, password } = req.body;
     const link = new Enlaces();
     link.url = shortid.generate();
-    link.name = shortid.generate();
+    link.name = name;
     link.original_name = original_name;
     link.password = password;
 

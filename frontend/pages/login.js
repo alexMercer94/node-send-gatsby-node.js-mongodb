@@ -1,9 +1,24 @@
 import { useFormik } from 'formik';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect } from 'react';
 import * as Yup from 'yup';
+import Alert from '../components/Alert';
 import Layout from '../components/Layout';
+import authContext from '../context/auth/authContext';
 
 const Login = () => {
+    const AuthContext = useContext(authContext);
+    const { message, login, authenticated } = AuthContext;
+
+    // Next router
+    const router = useRouter();
+
+    useEffect(() => {
+        if (authenticated) {
+            router.push('/');
+        }
+    }, [authenticated]);
+
     // Fom & validations with Formik and Yup
     const formik = useFormik({
         initialValues: {
@@ -16,8 +31,8 @@ const Login = () => {
                 .required('El password es olibgatorio')
                 .min(6, 'El password debe contener al menos 6 caracteres'),
         }),
-        onSubmit: () => {
-            console.log('Enviando formulario');
+        onSubmit: (values) => {
+            login(values);
         },
     });
 
@@ -25,6 +40,7 @@ const Login = () => {
         <Layout>
             <div className="md:w-4/5 xl:w-3/5 mx-auto mb-32">
                 <h2 className="text-4xl font-sans font-bold text-gray-800 text-center -my-4">Iniciar Sesión</h2>
+                {message && <Alert />}
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-lg">
                         <form className="bg-white rounded shadow-md px-8 pt-6 pb-8 mb-4" onSubmit={formik.handleSubmit}>

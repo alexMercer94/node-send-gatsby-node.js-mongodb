@@ -1,13 +1,22 @@
 import React, { useReducer } from 'react';
 import axiosClient from '../../config/axios';
-import { CLEAN_ALERT, REGISTER_ERROR, REGISTER_SUCCESS, USER_AUTHENTICATED } from '../../redux/types';
+import tokenAuth from '../../config/tokenAuth';
+import {
+    CLEAN_ALERT,
+    LOGIN_ERROR,
+    LOGIN_SUCCESS,
+    LOGOUT,
+    REGISTER_ERROR,
+    REGISTER_SUCCESS,
+    USER_AUTHENTICATED,
+} from '../../redux/types';
 import authContext from './authContext';
 import authReducer from './authReducer';
 
 const AuthState = ({ children }) => {
     // Define initial state
     const initialState = {
-        token: '',
+        token: typeof window !== 'undefined' ? localStorage.getItem('token') : '',
         authenticated: null,
         user: null,
         message: null,
@@ -43,11 +52,56 @@ const AuthState = ({ children }) => {
         }, 3000);
     };
 
-    // User authenticated
-    const userAuthenticated = (name) => {
+    /**
+     * Login user
+     * @param {*} data
+     */
+    const login = async (data) => {
+        try {
+            const response = await axiosClient.post('/auth', data);
+            dispatch({
+                type: LOGIN_SUCCESS,
+                payload: response.data.token,
+            });
+        } catch (error) {
+            dispatch({
+                type: LOGIN_ERROR,
+                payload: error.response.data.msg,
+            });
+        }
+
+        // Clear alert after 3 sec
+        setTimeout(() => {
+            dispatch({
+                type: CLEAN_ALERT,
+            });
+        }, 3000);
+    };
+
+    /**
+     * Get user authenticted using JWT
+     */
+    const userAuthenticated = async () => {
+        const token = localStorage.getItem('token');
+        tokenAuth(token);
+
+        try {
+            const response = await axiosClient.get('/auth');
+            dispatch({
+                type: USER_AUTHENTICATED,
+                payload: response.data.user,
+            });
+        } catch (error) {
+            dispatch({
+                type: LOGIN_ERROR,
+                payload: error.response.data.msg,
+            });
+        }
+    };
+
+    const logout = () => {
         dispatch({
-            type: USER_AUTHENTICATED,
-            payload: name,
+            type: LOGOUT,
         });
     };
 
@@ -59,7 +113,10 @@ const AuthState = ({ children }) => {
                 user: state.user,
                 message: state.message,
                 registerUser,
+                login,
                 userAuthenticated,
+                userAuthenticated,
+                logout,
             }}
         >
             {children}
