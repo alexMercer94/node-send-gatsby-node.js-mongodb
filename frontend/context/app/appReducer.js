@@ -1,5 +1,6 @@
 import {
     CLEAN_ALERT,
+    CLEAR_STATE,
     CREATE_LINK_SUCCESS,
     SHOW_ALERT,
     UPLOAD_FILE,
@@ -21,6 +22,18 @@ const appReducer = (state, action) => {
             return { ...state, loading: true };
         case CREATE_LINK_SUCCESS:
             return { ...state, url: action.payload };
+        case CLEAR_STATE:
+            return {
+                ...state,
+                file_message: null,
+                name: '',
+                original_name: '',
+                loading: null,
+                downloads: 1,
+                password: '',
+                author: null,
+                url: '',
+            };
         default:
             return state;
     }

@@ -44,6 +44,20 @@ exports.newLink = async (req, res, next) => {
 };
 
 /**
+ * Get all links
+ * @param {*} req
+ * @param {*} res
+ */
+exports.getAllLinks = async (req, res) => {
+    try {
+        const enlaces = await Enlaces.find({}).select('url -_id');
+        res.json({ enlaces });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/**
  * Get Link
  * @param {*} req
  * @param {*} res
@@ -57,16 +71,5 @@ exports.getLink = async (req, res, next) => {
         return next();
     }
     res.json({ file: link.name });
-    const { downloads, name } = link;
-
-    if (downloads === 1) {
-        // Delete file
-        req.file = name;
-        await Enlaces.findOneAndRemove(url);
-
-        next();
-    } else {
-        link.downloads--;
-        await link.save();
-    }
+    next();
 };

@@ -2,6 +2,7 @@ import React, { useReducer } from 'react';
 import axiosClient from '../../config/axios';
 import {
     CLEAN_ALERT,
+    CLEAR_STATE,
     CREATE_LINK_SUCCESS,
     SHOW_ALERT,
     UPLOAD_FILE,
@@ -54,7 +55,7 @@ const AppState = ({ children }) => {
         });
 
         try {
-            const response = await axiosClient.post('/files', formData);
+            const response = await axiosClient.post('/api/files', formData);
             console.log(response.data);
             dispatch({
                 type: UPLOAD_FILE_SUCCESS,
@@ -85,7 +86,7 @@ const AppState = ({ children }) => {
         };
 
         try {
-            const response = await axiosClient.post('/enlaces', data);
+            const response = await axiosClient.post('/api/enlaces', data);
             console.log(response.data.msg);
             dispatch({
                 type: CREATE_LINK_SUCCESS,
@@ -94,6 +95,12 @@ const AppState = ({ children }) => {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const clearState = () => {
+        dispatch({
+            type: CLEAR_STATE,
+        });
     };
 
     return (
@@ -110,6 +117,7 @@ const AppState = ({ children }) => {
                 showAlert,
                 uploadFile,
                 createLink,
+                clearState,
             }}
         >
             {children}

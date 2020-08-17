@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Enlaces = require('../models/Enlace');
 
 // Subida de archivos
 const multer = require('multer');
@@ -41,6 +42,11 @@ exports.uploadFile = async (req, res, next) => {
     });
 };
 
+/**
+ * Delete file
+ * @param {*} req
+ * @param {*} res
+ */
 exports.deleteFile = async (req, res) => {
     console.log(req.file);
     try {
@@ -48,5 +54,31 @@ exports.deleteFile = async (req, res) => {
         console.log('Archivo eliminado');
     } catch (error) {
         console.log(error);
+    }
+};
+
+/**
+ * Download a file
+ */
+exports.download = async (req, res, next) => {
+    const { archivo } = req.params;
+    // Get link
+    const link = await Enlaces.findOne({ name: archivo });
+
+    const file = __dirname + '/../uploads/' + archivo;
+
+    res.download(file);
+
+    const { downloads, name } = link;
+
+    if (downloads === 1) {
+        // Delete file
+        req.file = name;
+        await Enlaces.findOneAndRemove(link.id);
+
+        next();
+    } else {
+        link.downloads--;
+        await link.save();
     }
 };

@@ -58,7 +58,7 @@ const AuthState = ({ children }) => {
      */
     const login = async (data) => {
         try {
-            const response = await axiosClient.post('/auth', data);
+            const response = await axiosClient.post('/api/auth', data);
             dispatch({
                 type: LOGIN_SUCCESS,
                 payload: response.data.token,
@@ -86,7 +86,7 @@ const AuthState = ({ children }) => {
         tokenAuth(token);
 
         try {
-            const response = await axiosClient.get('/auth');
+            const response = await axiosClient.get('/api/auth');
             dispatch({
                 type: USER_AUTHENTICATED,
                 payload: response.data.user,

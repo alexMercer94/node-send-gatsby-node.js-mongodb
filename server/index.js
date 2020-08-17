@@ -17,6 +17,9 @@ app.use(cors(corsOptions));
 // App port
 const port = process.env.PORT || 4000;
 
+//Enable public carpet
+app.use(express.static('uploads'));
+
 // Enable read body's values
 app.use(express.json());
 
