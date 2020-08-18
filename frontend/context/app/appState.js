@@ -1,6 +1,8 @@
 import React, { useReducer } from 'react';
 import axiosClient from '../../config/axios';
 import {
+    ADD_NO_DOWNLOADS,
+    ADD_PASSWORD,
     CLEAN_ALERT,
     CLEAR_STATE,
     CREATE_LINK_SUCCESS,
@@ -97,9 +99,34 @@ const AppState = ({ children }) => {
         }
     };
 
+    /**
+     * Clear state
+     */
     const clearState = () => {
         dispatch({
             type: CLEAR_STATE,
+        });
+    };
+
+    /**
+     * Add password to encrypt file
+     * @param {*} password
+     */
+    const addPassword = (password) => {
+        dispatch({
+            type: ADD_PASSWORD,
+            payload: password,
+        });
+    };
+
+    /**
+     * Add no downloads
+     * @param {*} downloads
+     */
+    const addNoDownloads = (downloads) => {
+        dispatch({
+            type: ADD_NO_DOWNLOADS,
+            payload: downloads,
         });
     };
 
@@ -118,6 +145,8 @@ const AppState = ({ children }) => {
                 uploadFile,
                 createLink,
                 clearState,
+                addPassword,
+                addNoDownloads,
             }}
         >
             {children}

@@ -14,6 +14,8 @@ router.post(
 
 router.get('/', enlaceController.getAllLinks);
 
-router.get('/:url', enlaceController.getLink);
+router.get('/:url', enlaceController.hasPassword, enlaceController.getLink);
+
+router.post('/:url', enlaceController.verifyPassword, enlaceController.getLink);
 
 module.exports = router;

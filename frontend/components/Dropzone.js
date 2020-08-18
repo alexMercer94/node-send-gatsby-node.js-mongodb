@@ -1,10 +1,16 @@
 import React, { useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import appContext from '../context/app/appContext';
+import authContext from '../context/auth/authContext';
+import Form from './Form';
 
 const Dropzone = () => {
     const AppContext = useContext(appContext);
     const { loading, showAlert, uploadFile, createLink } = AppContext;
+
+    // Auth context
+    const AuthContext = useContext(authContext);
+    const { user, authenticated } = AuthContext;
 
     const onDropRejected = () => {
         showAlert('No se pudo subir, el limite es 1MB, obten una cuenta gratis pra subir archivos más grandes');
@@ -36,6 +42,9 @@ const Dropzone = () => {
                 <div className="mt-10 w-full">
                     <h4 className="text-2xl font-bold text-center mb-4">Archivos</h4>
                     <ul>{files}</ul>
+
+                    {authenticated ? <Form></Form> : ''}
+
                     {loading ? (
                         <p className="my-10 text-center text-gray-600">Subiendo archivo...</p>
                     ) : (

@@ -1,4 +1,6 @@
 import {
+    ADD_NO_DOWNLOADS,
+    ADD_PASSWORD,
     CLEAN_ALERT,
     CLEAR_STATE,
     CREATE_LINK_SUCCESS,
@@ -21,7 +23,7 @@ const appReducer = (state, action) => {
         case UPLOAD_FILE:
             return { ...state, loading: true };
         case CREATE_LINK_SUCCESS:
-            return { ...state, url: action.payload };
+            return { ...state, url: action.payload, loading: null };
         case CLEAR_STATE:
             return {
                 ...state,
@@ -34,6 +36,10 @@ const appReducer = (state, action) => {
                 author: null,
                 url: '',
             };
+        case ADD_PASSWORD:
+            return { ...state, password: action.payload };
+        case ADD_NO_DOWNLOADS:
+            return { ...state, downloads: action.payload };
         default:
             return state;
     }

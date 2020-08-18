@@ -28,7 +28,7 @@ exports.newLink = async (req, res, next) => {
 
         if (password) {
             const salt = await bcrypt.genSalt(10);
-            link.password = await bcrypt.hash(password, salt);
+            link.password = await bcrypt.hash(`${password}`, salt);
         }
 
         link.author = req.user.id;
@@ -70,6 +70,48 @@ exports.getLink = async (req, res, next) => {
         res.status(404).json({ msg: 'El enlace no existe' });
         return next();
     }
-    res.json({ file: link.name });
+    res.json({ file: link.name, password: false });
     next();
+};
+
+/**
+ * Verify if link has a password
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.hasPassword = async (req, res, next) => {
+    const { url } = req.params;
+    // Check if exiist link
+    const link = await Enlaces.findOne({ url });
+    if (!link) {
+        res.status(404).json({ msg: 'El enlace no existe' });
+        return next();
+    }
+
+    if (link.password) {
+        return res.json({ password: true, enlace: link.url });
+    }
+
+    next();
+};
+
+/**
+ * Validate password
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.verifyPassword = async (req, res, next) => {
+    const { url } = req.params;
+    const { password } = req.body;
+
+    const enlace = await Enlaces.findOne({ url });
+
+    if (bcrypt.compareSync(password, enlace.password)) {
+        // Permitir descargar el archivo
+        next();
+    } else {
+        return res.status(401).json({ msg: 'Password Inconrrecto' });
+    }
 };
